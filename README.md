@@ -16,7 +16,7 @@ To succesfully use this sample you must
     - [Step 1.2](#step-12---create-iot-devices)
 
 ## Architecture Overview
-![](./images/BasicArchitecture.jpg?raw=true)
+![](images/BasicArchitecture.JPG?raw=true)
 
 In this example the flow of data is shown in the above message
 
