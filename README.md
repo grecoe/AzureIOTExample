@@ -14,6 +14,9 @@ To succesfully use this sample you must
 - [Step 1 - Set up Services](#step-1---set-up-services)
     - [Step 1.1 - Stream Analytics job](#step-11---configure-stream-analytics-job)
     - [Step 1.2 - Create Devices](#step-12---create-iot-devices)
+- [Step 2 Collect Settings](#step-2---fill-in-settingsjson-settings)
+- [Step 3 Run Scripts](#step-3---run-scripts)
+
 
 ## Architecture Overview
 ![](images/BasicArchitecture.JPG?raw=true)
@@ -28,6 +31,8 @@ In this example the flow of data is shown in the above message
 
 > <b>NOTE:</b> This example does not take into account Network Isolation or other security best practices. 
 
+[Top of article](#azureiotexample)
+
 ## Step 1 - Set up services
 While it is completely possible to set up the following resources using Azure ARM templates, this example is set up manually. 
 
@@ -40,6 +45,8 @@ While it is completely possible to set up the following resources using Azure AR
 |Azure IOT Hub|- In the search enter <b>IOT Hub</b> and select IOT Hub from the options.<br>- Click create, ensure it's going to the resource group above in the same region then accept all defaults.| 
 |Azure Storage Account|- In the search enter <b>Storage Account</b> and select Storage account from the options.<br>- Click create, ensure it's going to the resource group above in the same region then accept all defaults.| 
 |Azure Stream Ananlytics Job|- In the search enter <b>Stream Ananlytics job</b> and select Stream Ananlytics job from the options.<br>- Click create, ensure it's going to the resource group above in the same region then accept all defaults.| 
+
+[Top of article](#azureiotexample)
 
 ### Step 1.1 - Configure Stream Analytics job
 
@@ -73,6 +80,8 @@ FROM
 ```
 - Go to Overview in the main menu for the Stream Analytics job and click Start
 
+[Top of article](#azureiotexample)
+
 ### Step 1.2 - Create IOT Device(s)
 
 Now that we have the services up, you will need to [generate an IOT device](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-python-python-device-management-get-started#register-a-new-device-in-the-iot-hub). 
@@ -86,6 +95,9 @@ az iot hub device-identity create --device-id myDeviceId --hub-name {Your IoT Hu
 [NOTE Change in command from page listing above]
 az iot hub device-identity connection-string show --device-id myDeviceId --hub-name {Your IoT Hub name} -o table
 ```
+
+[Top of article](#azureiotexample)
+
 ## Step 2 - Fill in settings.json settings
 
 To succefully run the scripts you need to fill in some details in the <b>settings.json</b> file located in the root of this repo. 
@@ -98,9 +110,11 @@ To succefully run the scripts you need to fill in some details in the <b>setting
 |table_store.account_key|The primary key for the storage account created above.<br><br>> az storage account keys list --account-name {Your storage account name}<br><br>From the output, copy key1.value into the setting  table_store.account_key|
 |table_store.table_name|This is the table name in the above storage account where the Stream Analytics job is recording IOT events. If you left the name as requested above, you will not need to change this value.|
 
+[Top of article](#azureiotexample)
 
 ## Step 3 - Run Scripts
 
+[Top of article](#azureiotexample)
 
 
 
