@@ -27,7 +27,7 @@ In this example the flow of data is shown in the above message
 |----|----|
 |1|An IOT Sensor/Device sends messages to the IOT Hub|
 |2|A Stream Analytics Job detects incoming IOT Hub messages and branches them to two different storage solutions:<br><br><b>1.</b> (Not implemented in this sample) Dump all raw data to Cosmos DB<br><b>2.</b> Stream out raw data to an Azure Storage Table|
-|3|A serverless function (Azure Function):<br><br><b>1.</b> Reads the table storage<br><b>2.</b> Determines if a notification to the device is warranted.<br><b>3</b>. Sends a message back to the device through the IOT Hub.<br><b>4</b>. Performs maintenance (deletes) on storage table (as all data will be in Cosmos)|
+|3|A serverless function (Azure Function):<br><br><b>1.</b> Reads the table storage<br><b>2.</b> Determines if a notification to the device is warranted.<br><b>3</b>. Sends a message back to the device through the IOT Hub.<br><b>4</b>. Performs maintenance (deletes) on storage table (as all data will be in Cosmos)<br><br>NOTE: This is not implemented as an actual function in this example but as Python code you run locally (simulate_serverless.py)|
 
 > <b>NOTE:</b> This example does not take into account Network Isolation or other security best practices. 
 
