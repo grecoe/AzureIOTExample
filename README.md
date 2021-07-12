@@ -149,4 +149,8 @@ See file for more detail.
 #### Monitor activity for messages back to the device
 https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-visual-studio-cloud-device-messaging
 
+or
+
+https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-vscode-iot-toolkit-cloud-device-messaging
+
 [Top of article](#azureiotexample)
