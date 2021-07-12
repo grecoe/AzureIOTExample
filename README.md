@@ -10,10 +10,10 @@ To succesfully use this sample you must
 - Have the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) installed on your system. 
 
 ## Contents
-- [Architecture](#architecture-overview)
-- [Step 1](#step-1---set-up-services)
-    - [Step 1.1](#step-11---configure-stream-analytics-job)
-    - [Step 1.2](#step-12---create-iot-devices)
+- [Architecture Overview](#architecture-overview)
+- [Step 1 - Set up Services](#step-1---set-up-services)
+    - [Step 1.1 - Stream Analytics job](#step-11---configure-stream-analytics-job)
+    - [Step 1.2 - Create Devices](#step-12---create-iot-devices)
 
 ## Architecture Overview
 ![](images/BasicArchitecture.JPG?raw=true)
@@ -77,9 +77,31 @@ FROM
 
 Now that we have the services up, you will need to [generate an IOT device](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-python-python-device-management-get-started#register-a-new-device-in-the-iot-hub). 
 
-This can be done through the Azure Portal or via the Azure CLI. 
+This can be done through the Azure Portal or via the Azure CLI. Here is an example (from the page above) to accomplish this from the command line:
+```
+az extension add --name azure-iot
+az account set -s [YOUR_SUBSCRIPION_ID]
+[For the number of devices you want to create on the IOT Hub]
+az iot hub device-identity create --device-id myDeviceId --hub-name {Your IoT Hub name}
+[NOTE Change in command from page listing above]
+az iot hub device-identity connection-string show --device-id myDeviceId --hub-name {Your IoT Hub name} -o table
+```
+## Step 2 - Fill in settings.json settings
+
+To succefully run the scripts you need to fill in some details in the <b>settings.json</b> file located in the root of this repo. 
+
+|Setting|Value|
+|----|----|
+|simulation.hubconnection|Get the Service connection string to the IOT Hub<br><br>> az iot hub connection-string show --all --hub-name {Your IoT Hub name}<br><br>Find the entry that contains <b>SharedAccessKeyName=service</b> and copy the full connection string to the setting simulation.hubconnection|
+|simulation.devices|This is a list of all of the connection strings for the devices that are being simulated. You need at least one of these.<br><br>For each device, run the following command and copy the connection string as an entry to the simulation.devices list:<br><br>> az iot hub device-identity connection-string show --device-id myDeviceId --hub-name {Your IoT Hub name} -o table|
+|table_store.account_name|The name of the storage account created above.|
+|table_store.account_key|The primary key for the storage account created above.<br><br>> az storage account keys list --account-name {Your storage account name}<br><br>From the output, copy key1.value into the setting  table_store.account_key|
+|table_store.table_name|This is the table name in the above storage account where the Stream Analytics job is recording IOT events. If you left the name as requested above, you will not need to change this value.|
 
 
-# Step 2 - Create Devices
+## Step 3 - Run Scripts
+
+
+
 
 https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-python-python-device-management-get-started#register-a-new-device-in-the-iot-hub
