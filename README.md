@@ -9,8 +9,14 @@ To succesfully use this sample you must
 - Have [conda/python](https://docs.conda.io/en/latest/miniconda.html) installed on your system (or Virtual Machine if you so choose). 
 - Have the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) installed on your system. 
 
+## Contents
+- [Architecture](#architecture-overview)
+- [Step 1](#step-1---set-up-services)
+    - [Step 1.1](#step-11---configure-stream-analytics-job)
+    - [Step 1.2](#step-12---create-iot-devices)
+
 ## Architecture Overview
-![](images/BasicArchitecture.jpg)
+![](./images/BasicArchitecture.jpg)
 
 In this example the flow of data is shown in the above message
 
