@@ -114,8 +114,39 @@ To succefully run the scripts you need to fill in some details in the <b>setting
 
 ## Step 3 - Run Scripts
 
+To run the scripts you must first generate and activate the conda environment from a command prompt (not PowerShell):
+
+```
+conda env create -f environment.yml
+conda activate IOTEnv
+```
+
+### Simulate Sensor Data to IOT Hub
+
+```
+(IOTEnv) PATH> python simulate_sensors.py
+```
+
+Script mimics messages going from sensors to the IOT Hub. These messages populate the storage table. 
+
+See file for more detail.
+
+### Simulate Serverless Function Activity
+
+```
+(IOTEnv) PATH> python simulate_serverless.py
+```
+
+> <b>NOTE</b>: This example does not actually set up an Azure Function, instead this file mimics the behavior that would be required within the function itself.
+
+Script mimics Azure Function for:
+- Scanning messages arriving within a specified window.
+- Sending notifications back to the device.
+- Clearing the storage table cache of outdated records.  
+
+See file for more detail.
+
+#### Monitor activity for messages back to the device
+https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-visual-studio-cloud-device-messaging
+
 [Top of article](#azureiotexample)
-
-
-
-https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-python-python-device-management-get-started#register-a-new-device-in-the-iot-hub

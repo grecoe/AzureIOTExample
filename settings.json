@@ -1,0 +1,17 @@
+{
+    "simulation" : {
+        "hubconnection" : "YOUR_IOT_HUB_SERVICE_CONNECTION_STRING",
+        "devices" :[
+            "LIST_OF_DEVICE_CONNECTION_STRINGS"
+        ],
+        "message_count" : 20,
+        "delay_min" : 0.5,
+        "search_seconds" : 600,
+        "cache_life_seconds" : 660 
+    },
+    "table_store" :{
+        "account_name" : "YOUR_STORAGE_ACCOUNT_NAME",
+        "account_key" : "YOUR_STORAGE_ACCOUNT_KEY",
+        "table_name" : "streamoutput"
+    }
+}
