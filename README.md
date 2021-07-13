@@ -1,7 +1,25 @@
 # AzureIOTExample
 
-This repo creates an example on how to use Azure IOT Hub to recieve and send messages to an IOT device. 
+This repo creates an example on how to use Azure IOT Hub to recieve and send messages to an IOT device in a generic way and without tying all the loose ends up.
 
+### Scenario
+The solution has multiple IOT devices spread across a geographic region, or perhaps within a single factory.
+
+The devices all report status through an Azure IOT Hub. Attached to the IOT hub is an Azure Stream Analytics job which branches that incoming sensor data to two storage services:
+
+- Azure Cosmos DB for long term storage 
+- Azure Table Storage for temporary storage
+
+Periodically the temporary storage is processed for:
+
+- Determine if a certain state has been reached, and if so, send a control message back to the reorting IOT device.
+- Maintain the temorary storage as it just needs enough data to process.  
+
+> This example solution does not include the connection of a Cosmos DB to the solution for cost reasons. Pushing data with an Azure Stream Analytics job to cosmos is a trivial task. 
+
+> This example solution does not implement the timer triggered Azure Function to process the temporary storage. This functionality is provided through a Python script included in this directory. Wrapping this to an Azure Function is also a relatively trivial task. 
+
+### Prerequisites
 To succesfully use this sample you must 
 
 - Have an Azure Subscription
