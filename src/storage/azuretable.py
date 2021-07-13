@@ -46,16 +46,10 @@ class AzureTableStoreUtil:
                     partition_key=pair[1]
                     )
 
-    def add_record(self, table_name:str, row_key:str, partition:str, props:dict):
-        entity_record = {
-            "RowKey" : row_key, 
-            "PartitionKey" : partition
-        }
-        entity_record.update(props)
-
+    def add_record(self, table_name:str, entity:dict):
         with self._create_table(table_name) as log_table:
             try:
-                resp = log_table.create_entity(entity=entity_record)
+                resp = log_table.create_entity(entity=entity)
             except Exception as ex:
                 print(type(ex))
                 print(str(ex))

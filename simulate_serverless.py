@@ -1,5 +1,6 @@
 import datetime
 from src.storage.azuretable import AzureTableStoreUtil
+from src.storage.process import ProcessEntry
 from src.utils.configuration import Configuration
 from src.utils.iothubutil import IOTHubUtil
 
@@ -7,8 +8,11 @@ def mock_function():
     # Configuration has settings about account/table
     configuration = Configuration.load_configuration("./settings.json")
 
-    # Process log record
-    process_info = {}
+    # Process log record data
+    process_entry = ProcessEntry(
+        configuration.table_store.log_table,
+        configuration.table_store.log_partition
+        )
 
     # Create the table util
     table_store_utility = AzureTableStoreUtil(
@@ -25,10 +29,12 @@ def mock_function():
     cache_cutoff = end_time - cache_delta
 
     # For the log
-    process_info["scanStart"] = start_time.isoformat()
-    process_info["scanEnd"] = end_time.isoformat()
-    process_info["notifiedDevices"] = []
-    process_info["cacheCutoff"] = cache_cutoff.isoformat()
+    process_entry.scanStart = start_time.isoformat()
+    process_entry.scanEnd = end_time.isoformat()
+    process_entry.recordsInScan = 0
+    process_entry.notifiedDevices = 0
+    process_entry.cacheCutoff = cache_cutoff.isoformat()
+    process_entry.cacheCleared = 0
 
     ###########################################################################
     # Search the table for records in our specified search window to process
@@ -39,7 +45,7 @@ def mock_function():
                 end_time
                 )
 
-    process_info["recordsInScan"] = len(records)
+    process_entry.recordsInScan = len(records)
 
     print("Process {} records in window {} to {}".format(
         len(records),
@@ -54,8 +60,7 @@ def mock_function():
         for record in records:
             if record["triggered"]:
                 print("Notify ", record['uid'])
-                if record['uid'] not in process_info["notifiedDevices"]:
-                    process_info["notifiedDevices"].append(record['uid'])
+                process_entry.notifiedDevices += 1
 
                 hubUtil.send_device_message(
                     record['uid'],
@@ -72,7 +77,7 @@ def mock_function():
         )
 
     # Report how many records are going to be deleted
-    process_info["clearedRecordCount"] = len(aged_records)
+    process_entry.cacheCleared = len(aged_records)
 
     # With the list before a certain time, we can batch delete them
     # to keep the table clean....
@@ -93,13 +98,9 @@ def mock_function():
     ###########################################################################
     # Now add a processing log to another table
     ###########################################################################
-    process_info["notifiedDevices"].append("another for test")
-    process_info["notifiedDevices"] = ",".join(process_info["notifiedDevices"])
     table_store_utility.add_record(
-        configuration.table_store.log_table,
-        datetime.datetime.utcnow().isoformat(),
-        configuration.table_store.log_partition,
-        process_info
+        process_entry.table_name,
+        process_entry.get_entity()
     )
 
 
