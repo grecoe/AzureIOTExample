@@ -46,6 +46,21 @@ class AzureTableStoreUtil:
                     partition_key=pair[1]
                     )
 
+    def add_record(self, table_name:str, row_key:str, partition:str, props:dict):
+        entity_record = {
+            "RowKey" : row_key, 
+            "PartitionKey" : partition
+        }
+        entity_record.update(props)
+
+        with self._create_table(table_name) as log_table:
+            try:
+                resp = log_table.create_entity(entity=entity_record)
+            except Exception as ex:
+                print(type(ex))
+                print(str(ex))
+                print("Entity already exists!")
+
     @staticmethod
     def _get_query_filter(start: datetime, end: datetime) -> str:
         """If no end date we are looking for anything BEFORE start, 
@@ -62,6 +77,17 @@ class AzureTableStoreUtil:
             )
 
         return query_filter
+
+    def _create_table(self, table_name:str) -> TableClient:
+        return_table = None
+        with TableClient.from_connection_string(conn_str=self.connection_string, table_name=table_name) as table_client:
+            try:
+                table_client.create_table()
+                return_table = table_client
+            except Exception as ex:
+                pass
+                
+        return self._get_table_client(table_name)
 
     def _get_table_client(self, table_name: str) ->TableClient:
         return_client = None

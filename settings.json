@@ -12,6 +12,8 @@
     "table_store" :{
         "account_name" : "YOUR_STORAGE_ACCOUNT_NAME",
         "account_key" : "YOUR_STORAGE_ACCOUNT_KEY",
-        "table_name" : "streamoutput"
+        "table_name" : "streamoutput",
+        "log_partition" : "iot_process",
+        "log_table" : "processedrec"
     }
 }
