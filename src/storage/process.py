@@ -7,6 +7,10 @@ class ProcessEntry:
         self.PartitionKey = partition_key
 
     def get_entity(self):
+        """
+        Entity is everyting in self.__dict__ EXCEPT the 
+        table name.
+        """
         entity = {}
         for prop in self.__dict__:
             if prop != 'table_name':

@@ -21,14 +21,15 @@ def mock_function():
     )
 
 
-    # Set scan and cache cutoff window
+    # Set scan and cache cutoff window for this run. 
     end_time = datetime.datetime.utcnow()
     start_delta = datetime.timedelta(seconds=configuration.simulation.search_seconds)
     start_time = end_time - start_delta
     cache_delta = datetime.timedelta(seconds=configuration.simulation.cache_life_seconds)
     cache_cutoff = end_time - cache_delta
 
-    # For the log
+    # For the log - Note, have to use string format of time in 
+    # table output or API will balk. 
     process_entry.scanStart = start_time.isoformat()
     process_entry.scanEnd = end_time.isoformat()
     process_entry.recordsInScan = 0
@@ -58,6 +59,9 @@ def mock_function():
     if len(records) > 0:
         hubUtil = IOTHubUtil(configuration.simulation.hubconnection)
         for record in records:
+            # This is really where real workwill occur. For 
+            # this simple example, if triggered is true, call
+            # back to the device with some dummy message.             
             if record["triggered"]:
                 print("Notify ", record['uid'])
                 process_entry.notifiedDevices += 1
@@ -80,7 +84,7 @@ def mock_function():
     process_entry.cacheCleared = len(aged_records)
 
     # With the list before a certain time, we can batch delete them
-    # to keep the table clean....
+    # to keep the table clean....get a list of tuples to pass along.
     delete_tuples = []
     for record in aged_records:
         delete_tuples.append((record["RowKey"],record["PartitionKey"]))
@@ -90,6 +94,7 @@ def mock_function():
         cache_cutoff.isoformat()
         ))
 
+    # Actually delete them
     table_store_utility.delete_records(
         configuration.table_store.table_name,
         delete_tuples

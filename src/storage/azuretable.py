@@ -13,8 +13,22 @@ class AzureTableStoreUtil:
             account_key
         )
 
-    def search_table(self, table_name:str, start: datetime, end: datetime = None) -> typing.Dict[str, typing.Any]:
+    def search_table(self, table_name:str, start: datetime, end: datetime = None) -> typing.List[typing.Dict[str, typing.Any]]:
+        """
+        Search the storage table for records in a time window.
 
+        If end is not provided, get all records before start, otherwise
+        all records between start and end.
+
+        Params:
+        table_name - required: Yes  Storage Table to search
+        start -      required: Yes  When end is none = all records before this time
+                                    When end is not none = start of window
+        end -        required: No   Identifies end of window scan
+
+        Returns:
+        List of dictionaries, each represents a record found
+        """
         return_records = []
         with self._get_table_client(table_name) as table_client:
             query_filter = AzureTableStoreUtil._get_query_filter(start, end)
@@ -37,8 +51,14 @@ class AzureTableStoreUtil:
         
         return return_records
 
-    def delete_records(self, table_name:str, records:typing.Tuple[str,str]) -> None:
-        """Tuple is (row,partion)"""
+    def delete_records(self, table_name:str, records:typing.List[typing.Tuple[str,str]]) -> None:
+        """
+        Delete records from a table
+        
+        Parameters:
+        table_name - name of table to remove. 
+        records - List of tuples that are (RowKey,PartitionKey)
+        """
         with self._get_table_client(table_name) as table_client:
             for pair in records:
                 table_client.delete_entity(
@@ -47,18 +67,29 @@ class AzureTableStoreUtil:
                     )
 
     def add_record(self, table_name:str, entity:dict):
+        """
+        Add a record to a table
+
+        Parameters:
+        table_name - Name of table to add to
+        entity - Dictionary of non list/dict data
+        """
         with self._create_table(table_name) as log_table:
             try:
                 resp = log_table.create_entity(entity=entity)
             except Exception as ex:
-                print(type(ex))
+                print("Entity already exists?")
                 print(str(ex))
-                print("Entity already exists!")
 
     @staticmethod
     def _get_query_filter(start: datetime, end: datetime) -> str:
         """If no end date we are looking for anything BEFORE start, 
-        otherwise get records between times"""
+        otherwise get records between times
+        
+        NOTE: This was done with an IOT Hub in mind so the time field
+        EventProcessedUtcTime comes from the IOT Hub, this will need
+        to change to whatever time field you add to your table. 
+        """
         query_filter = None
         if end is not None:
             query_filter = "EventProcessedUtcTime ge datetime'{}' and EventProcessedUtcTime lt datetime'{}'".format(
@@ -73,17 +104,20 @@ class AzureTableStoreUtil:
         return query_filter
 
     def _create_table(self, table_name:str) -> TableClient:
-        return_table = None
+        """
+        Ensure a table exists in the table storage 
+        """
         with TableClient.from_connection_string(conn_str=self.connection_string, table_name=table_name) as table_client:
             try:
                 table_client.create_table()
-                return_table = table_client
             except Exception as ex:
                 pass
                 
         return self._get_table_client(table_name)
 
     def _get_table_client(self, table_name: str) ->TableClient:
+        """Searches for and returns a table client for the specified
+        table in this account. If not found throws an exception."""
         return_client = None
 
         with TableServiceClient.from_connection_string(conn_str=self.connection_string) as table_service:

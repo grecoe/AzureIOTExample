@@ -19,6 +19,8 @@ class Generic:
             setattr(usable_parent, name, Generic(value))
 
 class Configuration:
+    """Uses the settings.json file to load up data. In an actual
+    function you'll store these in app settings."""
     @staticmethod
     def load_configuration(config_file:str) -> Generic:
         if not os.path.exists(config_file):
