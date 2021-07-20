@@ -40,15 +40,6 @@ class IOTDeviceUtil:
             await client.connect()
             self.devices[dev_name] = client
 
-    """
-    async def send_message(self, device_selector:int, message_details: dict) -> None:
-        if len(self.devices) == 0:
-            raise Exception("Call create_clients first")
-        
-        device = self.devices[device_selector % len(self.devices)]
-        await device.send_message(json.dumps(message_details))
-    """
-
     async def send_message_from_device(self, device_name:str, message_details: dict) -> None:
         if len(self.devices) == 0:
             raise Exception("Call create_clients first")
